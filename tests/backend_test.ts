@@ -282,3 +282,33 @@ Deno.test("browser icons are linked and served with correct media types", async 
     app.close();
   }
 });
+
+Deno.test("gift images are constrained to their media frames", async () => {
+  const app = createApp({
+    databasePath: ":memory:",
+    publicDir: "public",
+    secureCookies: false,
+  });
+  try {
+    const response = await app.handler(request("/styles.css"));
+    assertEquals(response.status, 200);
+    const css = await response.text();
+    const rule = css.match(/\.gift-image img\s*\{([^}]*)\}/)?.[1] ?? "";
+    for (
+      const declaration of [
+        "position: absolute",
+        "inset: 0",
+        "width: 100%",
+        "height: 100%",
+        "object-fit: cover",
+      ]
+    ) {
+      assert(
+        rule.includes(declaration),
+        `.gift-image img must include ${declaration}`,
+      );
+    }
+  } finally {
+    app.close();
+  }
+});
