@@ -192,7 +192,7 @@ function publicUser(row: DbRow): JsonObject {
 }
 
 function wishlistFromRow(row: DbRow): JsonObject {
-  return {
+  const result: JsonObject = {
     id: row.id,
     slug: row.slug,
     title: row.title,
@@ -202,6 +202,11 @@ function wishlistFromRow(row: DbRow): JsonObject {
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
+  if (row.item_count !== undefined) result.itemCount = Number(row.item_count);
+  if (row.reserved_count !== undefined) {
+    result.reservedCount = Number(row.reserved_count);
+  }
+  return result;
 }
 
 function itemFromRow(row: DbRow, owner = false): JsonObject {
@@ -588,9 +593,17 @@ export function createApp(options: AppOptions = {}) {
     if (!["GET", "HEAD"].includes(request.method)) verifyCsrf(request, auth);
 
     if (isWishlist && segments.length === 2 && request.method === "GET") {
-      const rows = db.raw.prepare(
-        "SELECT * FROM wishlists WHERE owner_id = ? ORDER BY updated_at DESC",
-      ).all(auth.userId) as DbRow[];
+      const rows = db.raw.prepare(`
+        SELECT
+          wishlists.*,
+          COUNT(items.id) AS item_count,
+          COUNT(items.reserved_at) AS reserved_count
+        FROM wishlists
+        LEFT JOIN items ON items.wishlist_id = wishlists.id
+        WHERE wishlists.owner_id = ?
+        GROUP BY wishlists.id
+        ORDER BY wishlists.updated_at DESC
+      `).all(auth.userId) as DbRow[];
       return json({ wishlists: rows.map(wishlistFromRow) });
     }
     if (isWishlist && segments.length === 2 && request.method === "POST") {

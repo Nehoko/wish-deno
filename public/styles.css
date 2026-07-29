@@ -487,6 +487,27 @@ input[type="checkbox"] {
   font-size: 1.75rem;
 }
 
+.list-card-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.list-card-link::after {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius);
+  content: "";
+}
+
+.list-card-link:focus-visible {
+  outline: none;
+}
+
+.list-card-link:focus-visible::after {
+  outline: 3px solid var(--ink);
+  outline-offset: -4px;
+}
+
 .list-card p {
   overflow: hidden;
   color: var(--muted);
@@ -495,6 +516,8 @@ input[type="checkbox"] {
 }
 
 .list-card .card-actions {
+  position: relative;
+  z-index: 1;
   margin-top: 1.5rem;
 }
 

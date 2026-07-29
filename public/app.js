@@ -343,13 +343,19 @@ async function loadDashboard() {
 
 function renderDashboard() {
   document.title = "My lists — Wish Deno";
-  const cards = state.lists.map((list) => `
+  const cards = state.lists.map((list) => {
+    const editorPath = `/dashboard/${encodeURIComponent(list.id)}`;
+    return `
     <article class="list-card">
       <div>
         <span class="badge ${list.published ? "badge-live" : ""}">
           ${list.published ? "Published" : "Private draft"}
         </span>
-        <h3>${escapeHtml(list.title)}</h3>
+        <h3>
+          <a class="list-card-link" href="${editorPath}" data-link>
+            ${escapeHtml(list.title)}
+          </a>
+        </h3>
         <p>${escapeHtml(list.description || "A fresh list ready for wishes.")}</p>
         <div class="dashboard-stats">
           <span>${list.itemCount} ${list.itemCount === 1 ? "wish" : "wishes"}</span>
@@ -358,19 +364,18 @@ function renderDashboard() {
         </div>
       </div>
       <div class="card-actions">
-        <a class="btn btn-primary btn-small" href="/dashboard/${
-    encodeURIComponent(list.id)
-  }" data-link>Edit list</a>
+        <a class="btn btn-primary btn-small" href="${editorPath}" data-link>Edit list</a>
         ${
-    list.published && list.slug
-      ? `<button class="btn btn-small" type="button" data-copy-list="${
-        escapeHtml(list.slug)
-      }">Copy link</button>`
-      : ""
-  }
+      list.published && list.slug
+        ? `<button class="btn btn-small" type="button" data-copy-list="${
+          escapeHtml(list.slug)
+        }">Copy link</button>`
+        : ""
+    }
       </div>
     </article>
-  `).join("");
+  `;
+  }).join("");
 
   app.innerHTML = `
     <section class="shell">

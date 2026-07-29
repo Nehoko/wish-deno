@@ -1,6 +1,6 @@
 {
   "name": "@wishdeno/app",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "exports": "./src/main.ts",
   "tasks": {
     "dev": "deno run --watch --allow-net --allow-read --allow-write --allow-env src/main.ts",

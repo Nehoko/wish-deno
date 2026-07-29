@@ -127,6 +127,15 @@ Deno.test("owner CRUD and public reservation lifecycle", async () => {
     assertEquals(ownerItem.reserved, true);
     assert(!JSON.stringify(ownerItem).includes(cancellationToken));
 
+    const dashboard = await app.handler(request("/api/wishlists", { cookie }));
+    const dashboardLists = (await jsonBody(dashboard)).wishlists as Record<
+      string,
+      unknown
+    >[];
+    assertEquals(dashboardLists.length, 1);
+    assertEquals(dashboardLists[0].itemCount, 1);
+    assertEquals(dashboardLists[0].reservedCount, 1);
+
     const cancelled = await app.handler(
       request(`/api/public/${slug}/items/${itemId}/cancel`, {
         method: "POST",
@@ -134,6 +143,16 @@ Deno.test("owner CRUD and public reservation lifecycle", async () => {
       }),
     );
     assertEquals(cancelled.status, 204);
+
+    const dashboardAfterCancel = await app.handler(
+      request("/api/wishlists", { cookie }),
+    );
+    const listAfterCancel = ((await jsonBody(dashboardAfterCancel)).wishlists as Record<
+      string,
+      unknown
+    >[])[0];
+    assertEquals(listAfterCancel.itemCount, 1);
+    assertEquals(listAfterCancel.reservedCount, 0);
 
     const updated = await app.handler(request(`/api/items/${itemId}`, {
       method: "PATCH",
@@ -308,6 +327,34 @@ Deno.test("gift images are constrained to their media frames", async () => {
         `.gift-image img must include ${declaration}`,
       );
     }
+  } finally {
+    app.close();
+  }
+});
+
+Deno.test("dashboard cards expose a stretched editor link", async () => {
+  const app = createApp({
+    databasePath: ":memory:",
+    publicDir: "public",
+    secureCookies: false,
+  });
+  try {
+    const scriptResponse = await app.handler(request("/app.js"));
+    assertEquals(scriptResponse.status, 200);
+    const script = await scriptResponse.text();
+    assert(script.includes('class="list-card-link"'));
+    assert(script.includes('href="${editorPath}" data-link'));
+
+    const styleResponse = await app.handler(request("/styles.css"));
+    assertEquals(styleResponse.status, 200);
+    const css = await styleResponse.text();
+    const stretchedLink = css.match(/\.list-card-link::after\s*\{([^}]*)\}/)?.[1] ?? "";
+    assert(stretchedLink.includes("position: absolute"));
+    assert(stretchedLink.includes("inset: 0"));
+
+    const actions = css.match(/\.list-card \.card-actions\s*\{([^}]*)\}/)?.[1] ?? "";
+    assert(actions.includes("position: relative"));
+    assert(actions.includes("z-index: 1"));
   } finally {
     app.close();
   }
