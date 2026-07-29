@@ -1,0 +1,22 @@
+{
+  "name": "@wishdeno/app",
+  "version": "1.0.0",
+  "exports": "./src/main.ts",
+  "tasks": {
+    "dev": "deno run --watch --allow-net --allow-read --allow-write --allow-env src/main.ts",
+    "start": "deno run --allow-net --allow-read --allow-write --allow-env src/main.ts",
+    "check": "deno fmt --check && deno lint && deno check src/main.ts tests/*.ts && deno test --allow-net --allow-read --allow-write --allow-env",
+    "test": "deno test --allow-net --allow-read --allow-write --allow-env",
+    "test:coverage": "deno test --coverage=coverage --allow-net --allow-read --allow-write --allow-env && deno coverage coverage"
+  },
+  "fmt": {
+    "lineWidth": 88,
+    "semiColons": true,
+    "singleQuote": false
+  },
+  "lint": {
+    "rules": {
+      "tags": ["recommended"]
+    }
+  }
+}

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="Create thoughtful wish lists, share them, and avoid duplicate gifts."
+    >
+    <meta name="theme-color" content="#f7eee8">
+    <title>Wish Deno — wishes, made simple</title>
+    <link rel="stylesheet" href="/styles.css?v=1.0.0">
+    <script type="module" src="/app.js?v=1.0.0"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <a class="brand" href="/" data-link aria-label="Wish Deno home">
+        <span class="brand-mark" aria-hidden="true">✦</span>
+        <span>Wish Deno</span>
+      </a>
+      <nav id="site-nav" class="site-nav" aria-label="Primary navigation"></nav>
+    </header>
+    <main id="main" tabindex="-1">
+      <div id="app" aria-live="polite">
+        <div class="page-state">
+          <span class="spinner" aria-hidden="true"></span>
+          <p>Opening your wishes…</p>
+        </div>
+      </div>
+    </main>
+    <div id="modal-root"></div>
+    <div id="toast-region" class="toast-region" aria-live="polite"
+      aria-atomic="true"></div>
+  </body>
+</html>
