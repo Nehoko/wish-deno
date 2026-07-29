@@ -26,8 +26,6 @@ services:
         - CMD
         - deno
         - eval
-        - --allow-env=PORT
-        - --allow-net=127.0.0.1
         - "const p=Deno.env.get('PORT')??'8000';const r=await fetch('http://127.0.0.1:'+p+'/health');if(!r.ok)Deno.exit(1)"
       interval: 30s
       timeout: 5s

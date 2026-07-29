@@ -29,10 +29,10 @@ docker run -d \
   -p 127.0.0.1:8000:8000 \
   -e COOKIE_SECURE=true \
   -v wish-data:/data \
-  ghcr.io/nehoko/wish-deno:1
+  ghcr.io/nehoko/wish-deno:1.0.1
 ```
 
-Tags `1`, `1.0`, `1.0.0`, and `latest` are published for a `v1.0.0` release. Production
+Tags `1`, `1.0`, `1.0.1`, and `latest` are published for a `v1.0.1` release. Production
 deployments should pin a full version or image digest.
 
 For Compose, select the wanted `image` tag in [`compose.yaml`](compose.yaml), then:
@@ -51,7 +51,7 @@ For runtimes that create a root-owned empty volume, initialize it once:
 docker run --rm --user 0 \
   -v wish-data:/data \
   --entrypoint chown \
-  ghcr.io/nehoko/wish-deno:1 \
+  ghcr.io/nehoko/wish-deno:1.0.1 \
   1000:1000 /data
 ```
 

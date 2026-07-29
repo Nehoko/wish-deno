@@ -34,6 +34,6 @@ VOLUME ["/data"]
 EXPOSE 8000
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD ["deno", "eval", "--allow-env=PORT", "--allow-net=127.0.0.1", "const p=Deno.env.get('PORT')??'8000';const r=await fetch(`http://127.0.0.1:${p}/health`);if(!r.ok)Deno.exit(1)"]
+  CMD ["deno", "eval", "const p=Deno.env.get('PORT')??'8000';const r=await fetch(`http://127.0.0.1:${p}/health`);if(!r.ok)Deno.exit(1)"]
 
 CMD ["task", "start"]

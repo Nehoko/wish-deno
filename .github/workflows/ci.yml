@@ -57,6 +57,7 @@ jobs:
           docker run -d --name wish-deno-ci
           --read-only --tmpfs /tmp:rw,noexec,nosuid,size=16m
           --mount type=volume,src=wish-deno-ci-data,dst=/data
+          --health-interval=1s --health-start-period=0s
           -p 127.0.0.1:18080:8000
           wish-deno:ci
       - name: Wait for readiness
@@ -68,6 +69,21 @@ jobs:
             sleep 1
           done
           docker logs wish-deno-ci
+          exit 1
+      - name: Verify image healthcheck
+        run: |
+          for attempt in {1..10}; do
+            status="$(docker inspect --format '{{.State.Health.Status}}' wish-deno-ci)"
+            if [ "$status" = "healthy" ]; then
+              exit 0
+            fi
+            if [ "$status" = "unhealthy" ]; then
+              docker inspect --format '{{json .State.Health}}' wish-deno-ci
+              exit 1
+            fi
+            sleep 1
+          done
+          docker inspect --format '{{json .State.Health}}' wish-deno-ci
           exit 1
       - name: Show logs after failure
         if: failure()
