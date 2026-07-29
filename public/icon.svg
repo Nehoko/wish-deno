@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img"
+  aria-label="Wish Deno">
+  <rect width="512" height="512" rx="112" fill="#f7eee8" />
+  <circle cx="256" cy="256" r="164" fill="#171313" />
+  <path
+    d="M256 136C270 207 305 242 376 256C305 270 270 305 256 376C242 305 207 270 136 256C207 242 242 207 256 136Z"
+    fill="#f7eee8"
+  />
+</svg>

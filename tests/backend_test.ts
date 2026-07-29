@@ -243,3 +243,42 @@ Deno.test("health, readiness, validation, reorder, and global cancel alias", asy
     app.close();
   }
 });
+
+Deno.test("browser icons are linked and served with correct media types", async () => {
+  const app = createApp({
+    databasePath: ":memory:",
+    publicDir: "public",
+    secureCookies: false,
+  });
+  try {
+    const index = await app.handler(request("/"));
+    assertEquals(index.status, 200);
+    const html = await index.text();
+    for (
+      const path of [
+        "/favicon.ico",
+        "/icon.svg",
+        "/apple-touch-icon.png",
+        "/apple-touch-icon-precomposed.png",
+      ]
+    ) {
+      assert(html.includes(path), `${path} is not linked from index`);
+    }
+
+    for (
+      const [path, contentType] of [
+        ["/favicon.ico", "image/x-icon"],
+        ["/icon.svg", "image/svg+xml"],
+        ["/apple-touch-icon.png", "image/png"],
+        ["/apple-touch-icon-precomposed.png", "image/png"],
+      ]
+    ) {
+      const response = await app.handler(request(path));
+      assertEquals(response.status, 200);
+      assertEquals(response.headers.get("content-type"), contentType);
+      assert((await response.arrayBuffer()).byteLength > 0);
+    }
+  } finally {
+    app.close();
+  }
+});
