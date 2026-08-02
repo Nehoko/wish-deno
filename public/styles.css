@@ -404,6 +404,10 @@ select {
   background: white;
 }
 
+input[type="date"] {
+  min-width: 0;
+}
+
 textarea {
   min-height: 7.5rem;
   resize: vertical;
