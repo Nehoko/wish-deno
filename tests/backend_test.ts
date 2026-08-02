@@ -332,6 +332,23 @@ Deno.test("gift images are constrained to their media frames", async () => {
   }
 });
 
+Deno.test("date inputs can shrink within mobile forms", async () => {
+  const app = createApp({
+    databasePath: ":memory:",
+    publicDir: "public",
+    secureCookies: false,
+  });
+  try {
+    const response = await app.handler(request("/styles.css"));
+    assertEquals(response.status, 200);
+    const css = await response.text();
+    const rule = css.match(/input\[type="date"\]\s*\{([^}]*)\}/)?.[1] ?? "";
+    assert(rule.includes("min-width: 0"));
+  } finally {
+    app.close();
+  }
+});
+
 Deno.test("dashboard cards expose a stretched editor link", async () => {
   const app = createApp({
     databasePath: ":memory:",
