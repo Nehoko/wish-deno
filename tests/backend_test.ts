@@ -344,6 +344,13 @@ Deno.test("date inputs can shrink within mobile forms", async () => {
     const css = await response.text();
     const rule = css.match(/input\[type="date"\]\s*\{([^}]*)\}/)?.[1] ?? "";
     assert(rule.includes("min-width: 0"));
+    assert(css.includes("@supports (-webkit-touch-callout: none)"));
+    assert(css.includes('input[type="date"] {\n    padding: 0;'));
+    assert(
+      css.includes(
+        'input[type="date"]::-webkit-date-and-time-value {\n    padding: 0.7rem 0.8rem;',
+      ),
+    );
   } finally {
     app.close();
   }
