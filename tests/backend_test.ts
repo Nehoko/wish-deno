@@ -356,6 +356,26 @@ Deno.test("date inputs can shrink within mobile forms", async () => {
   }
 });
 
+Deno.test("public wishlist filters align along their bottom edge", async () => {
+  const app = createApp({
+    databasePath: ":memory:",
+    publicDir: "public",
+    secureCookies: false,
+  });
+  try {
+    const response = await app.handler(request("/styles.css"));
+    assertEquals(response.status, 200);
+    const css = await response.text();
+    const rule = css.match(/\.filter-bar\s*\{([^}]*)\}/)?.[1] ?? "";
+    assert(
+      rule.includes("align-items: end"),
+      ".filter-bar must bottom-align controls across browsers",
+    );
+  } finally {
+    app.close();
+  }
+});
+
 Deno.test("dashboard cards expose a stretched editor link", async () => {
   const app = createApp({
     databasePath: ":memory:",

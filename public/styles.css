@@ -714,6 +714,7 @@ input[type="checkbox"] {
 
 .filter-bar {
   display: grid;
+  align-items: end;
   grid-template-columns: minmax(220px, 1fr) repeat(2, minmax(160px, 0.3fr));
   gap: 0.75rem;
   margin-bottom: 1.4rem;
